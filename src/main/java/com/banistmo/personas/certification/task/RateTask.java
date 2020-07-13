@@ -17,7 +17,8 @@ public class RateTask implements Task {
     @Override
     public <T extends Actor> void performAs(T actor) {
         actor.attemptsTo(Open.browserOn(PeoplePage),
-                Click.on(LABEL_RATE));
+                Click.on(LABEL_RATE))
+        ;
     }
     public static RateTask actorRateOptions(String strActor,String strOptions)
     {
