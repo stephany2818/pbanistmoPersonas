@@ -1,0 +1,62 @@
+//Repositorios y  dependencias para ejecutar los proyectos de gradle
+buildscript {
+    repositories {
+        //Repositorios publicos para la toma de las dependencias
+        mavenCentral()
+        mavenLocal()
+        jcenter()
+    }
+    ext{
+        //Variables para acceder a las versiones
+        serenityVersion = '2.1.2'
+        serenityCucumberVersion = '1.9.45'
+    }
+    dependencies {
+
+        classpath("net.serenity-bdd:serenity-gradle-plugin:$rootProject.ext.serenityVersion")
+    }
+}
+
+plugins {
+    //Pluggins de los id con los que puedo trabajar la automatización con proyectos de gradle
+    id 'java'
+    id 'idea'
+    id 'eclipse'
+    //Agrega el Plugging para la gerenación del informe
+    //apply plugin: 'net.serenity-bdd.aggregator'
+}
+//permite trabajar con las tareas de serenity bdd
+apply plugin: 'net.serenity-bdd.aggregator'
+group 'com.seleniumeasy'
+version '1.0-SNAPSHOT'
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2");
+
+//Repositorios y Dependencias para el proyecto de Serenity
+repositories {
+    //Repositorios publicos para la toma de las dependencias
+    mavenCentral()
+    mavenLocal()
+    jcenter()
+}
+
+dependencies {
+    //dependencias son aquellas librerías que requiero para ejecutar apartes de la prueba
+    testImplementation "net.serenity-bdd:serenity-core:$rootProject.ext.serenityVersion"
+    testImplementation "net.serenity-bdd:serenity-junit:$rootProject.ext.serenityVersion"
+    implementation "net.serenity-bdd:serenity-screenplay:$rootProject.ext.serenityVersion"
+    implementation "net.serenity-bdd:serenity-screenplay-webdriver:$rootProject.ext.serenityVersion"
+    implementation "net.serenity-bdd:serenity-cucumber:$rootProject.ext.serenityCucumberVersion"
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.assertj:assertj-core:3.9.1'
+    testImplementation 'org.slf4j:slf4j-simple:1.7.7'
+}
+tasks.withType(Test){
+    //Permite utilizar las variables del sistema en el paquete de test
+    systemProperties = System.properties as Map<String, ?>
+    //Lanzar las automatizaciones en paralelo
+    maxParallelForks = Runtime.runtime.availableProcessors()
+}
+//Parametro que hace que la prueba no pare cuando falle
+gradle.startParameter.continueOnFailure = true
